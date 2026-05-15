@@ -9,7 +9,8 @@ import Modal from '../components/common/Modal';
 import Input from '../components/common/Input';
 import Select from '../components/common/Select';
 import Textarea from '../components/common/Textarea';
-import type { ExamType } from '../utils/types';
+import FileUpload from '../components/common/FileUpload';
+import type { ExamType, Attachment } from '../utils/types';
 
 const examTypes: { value: ExamType; label: string }[] = [
   { value: 'blood', label: '血液检查' },
@@ -24,6 +25,7 @@ export default function Examinations() {
   const { examinations, addExamination } = useHealthStore();
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
+  const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [formData, setFormData] = useState({
     examDate: new Date().toISOString().split('T')[0],
     examType: 'blood' as ExamType,
@@ -43,7 +45,7 @@ export default function Examinations() {
     e.preventDefault();
     addExamination({
       ...formData,
-      attachments: [],
+      attachments,
     });
     setShowAddModal(false);
     setFormData({
@@ -54,6 +56,7 @@ export default function Examinations() {
       conclusion: '',
       interpretation: '',
     });
+    setAttachments([]);
   };
 
   return (
@@ -149,8 +152,20 @@ export default function Examinations() {
             value={formData.interpretation}
             onChange={(e) => setFormData({ ...formData, interpretation: e.target.value })}
           />
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              上传报告单
+            </label>
+            <FileUpload
+              attachments={attachments}
+              onChange={setAttachments}
+            />
+          </div>
           <div className="flex justify-end gap-4 pt-4">
-            <Button type="button" variant="outline" onClick={() => setShowAddModal(false)}>
+            <Button type="button" variant="outline" onClick={() => {
+              setShowAddModal(false);
+              setAttachments([]);
+            }}>
               取消
             </Button>
             <Button type="submit">保存</Button>

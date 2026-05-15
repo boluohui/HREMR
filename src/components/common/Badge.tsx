@@ -3,11 +3,12 @@ import clsx from 'clsx';
 
 interface BadgeProps {
   children: ReactNode;
-  variant?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'gray';
+  variant?: 'primary' | 'secondary' | 'success' | 'warning' | 'gray';
   size?: 'sm' | 'md';
+  className?: string;
 }
 
-export default function Badge({ children, variant = 'primary', size = 'sm' }: BadgeProps) {
+export default function Badge({ children, variant = 'primary', size = 'sm', className }: BadgeProps) {
   const variants = {
     primary: 'bg-primary-100 text-primary-700',
     secondary: 'bg-secondary-100 text-secondary-700',
@@ -27,7 +28,8 @@ export default function Badge({ children, variant = 'primary', size = 'sm' }: Ba
       className={clsx(
         'inline-flex items-center font-medium rounded-full',
         variants[variant],
-        sizes[size]
+        sizes[size],
+        className
       )}
     >
       {children}

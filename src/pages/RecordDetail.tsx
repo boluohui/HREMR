@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Edit, Trash2, Calendar, MapPin, User, Phone, FileText } from 'lucide-react';
+import { ArrowLeft, Edit, Trash2, Calendar, MapPin, User, Phone, FileText, Download, Image as ImageIcon, X } from 'lucide-react';
 import { useHealthStore } from '../stores/healthStore';
 import Card from '../components/common/Card';
 import Button from '../components/common/Button';
@@ -14,6 +14,14 @@ export default function RecordDetail() {
   const { getRecord, deleteRecord } = useHealthStore();
   const record = id ? getRecord(id) : undefined;
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+  const handleDownload = (url: string, name: string) => {
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = name;
+    a.click();
+  };
 
   if (!record) {
     return (
@@ -145,6 +153,51 @@ export default function RecordDetail() {
         </Card>
       )}
 
+      {record.attachments && record.attachments.length > 0 && (
+        <Card>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">附件 ({record.attachments.length})</h3>
+          <div className="space-y-3">
+            {record.attachments.map((attachment) => (
+              <div
+                key={attachment.id}
+                className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200"
+              >
+                <div className="flex items-center gap-3 min-w-0 flex-1">
+                  {attachment.type === 'image' ? (
+                    <ImageIcon className="w-5 h-5 text-blue-500 flex-shrink-0" />
+                  ) : (
+                    <FileText className="w-5 h-5 text-red-500 flex-shrink-0" />
+                  )}
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium text-gray-900 truncate">
+                      {attachment.name}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 ml-2">
+                  {attachment.type === 'image' && (
+                    <button
+                      onClick={() => setSelectedImage(attachment.url)}
+                      className="p-1.5 hover:bg-gray-200 rounded-md transition-colors text-gray-600"
+                      title="预览图片"
+                    >
+                      <ImageIcon className="w-4 h-4" />
+                    </button>
+                  )}
+                  <button
+                    onClick={() => handleDownload(attachment.url, attachment.name)}
+                    className="p-1.5 hover:bg-gray-200 rounded-md transition-colors text-gray-600"
+                    title="下载文件"
+                  >
+                    <Download className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
+
       <Modal
         isOpen={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
@@ -161,6 +214,28 @@ export default function RecordDetail() {
           </Button>
         </div>
       </Modal>
+
+      {selectedImage && (
+        <div
+          className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4"
+          onClick={() => setSelectedImage(null)}
+        >
+          <div className="relative max-w-5xl w-full max-h-[90vh]">
+            <button
+              onClick={() => setSelectedImage(null)}
+              className="absolute -top-10 right-0 p-2 text-white hover:text-gray-300 transition-colors"
+            >
+              <X className="w-6 h-6" />
+            </button>
+            <img
+              src={selectedImage}
+              alt="预览"
+              className="w-full h-auto max-h-[90vh] object-contain rounded-lg"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

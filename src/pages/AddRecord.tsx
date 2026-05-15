@@ -6,6 +6,8 @@ import Button from '../components/common/Button';
 import Input from '../components/common/Input';
 import Textarea from '../components/common/Textarea';
 import Card from '../components/common/Card';
+import FileUpload from '../components/common/FileUpload';
+import type { Attachment } from '../utils/types';
 
 export default function AddRecord() {
   const navigate = useNavigate();
@@ -24,7 +26,7 @@ export default function AddRecord() {
     doctorAdvice: '',
     followUpDate: '',
   });
-
+  const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleChange = (
@@ -54,7 +56,7 @@ export default function AddRecord() {
 
     addRecord({
       ...formData,
-      attachments: [],
+      attachments,
     });
     navigate('/records');
   };
@@ -175,6 +177,14 @@ export default function AddRecord() {
               onChange={handleChange}
             />
           </div>
+        </Card>
+
+        <Card>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">上传附件</h3>
+          <FileUpload
+            attachments={attachments}
+            onChange={setAttachments}
+          />
         </Card>
 
         <div className="flex justify-end gap-4">

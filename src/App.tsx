@@ -5,6 +5,7 @@ import Records from './pages/Records';
 import AddRecord from './pages/AddRecord';
 import RecordDetail from './pages/RecordDetail';
 import Examinations from './pages/Examinations';
+import ExamDetail from './pages/ExamDetail';
 import Prescriptions from './pages/Prescriptions';
 import Profile from './pages/Profile';
 
@@ -18,6 +19,7 @@ export default function App() {
           <Route path="records/add" element={<AddRecord />} />
           <Route path="records/:id" element={<RecordDetail />} />
           <Route path="examinations" element={<Examinations />} />
+          <Route path="examinations/:id" element={<ExamDetail />} />
           <Route path="prescriptions" element={<Prescriptions />} />
           <Route path="profile" element={<Profile />} />
         </Route>
