@@ -1,4 +1,5 @@
 import { useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Download, Upload, Trash2, User, Shield, Bell, Database } from 'lucide-react';
 import { useHealthStore } from '../stores/healthStore';
 import Card from '../components/common/Card';
@@ -7,8 +8,8 @@ import Modal from '../components/common/Modal';
 import { useState } from 'react';
 
 export default function Profile() {
-  const { records, examinations, prescriptions, exportData, importData } = useHealthStore();
-  const [showImportModal, setShowImportModal] = useState(false);
+  const navigate = useNavigate();
+  const { records, examinations, prescriptions, exportData, importData, reset } = useHealthStore();
   const [showClearModal, setShowClearModal] = useState(false);
   const [importResult, setImportResult] = useState<{ success: boolean; message: string } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -38,18 +39,18 @@ export default function Profile() {
     const reader = new FileReader();
     reader.onload = (event) => {
       const content = event.target?.result as string;
-      const success = importData(content);
+      const result = importData(content);
       setImportResult({
-        success,
-        message: success ? '数据导入成功！' : '导入失败，请检查文件格式是否正确。',
+        success: result.success,
+        message: result.message,
       });
     };
     reader.readAsText(file);
   };
 
   const handleClearData = () => {
-    localStorage.removeItem('health-records-storage');
-    window.location.reload();
+    reset();
+    navigate('/');
   };
 
   return (

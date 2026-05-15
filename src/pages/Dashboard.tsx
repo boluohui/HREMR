@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FileText, TestTube, Pill, Calendar, Plus, ArrowRight } from 'lucide-react';
 import { useHealthStore } from '../stores/healthStore';
 import StatCard from '../components/dashboard/StatCard';
@@ -9,6 +9,7 @@ import { formatDate, getRelativeTime } from '../utils/formatters';
 import dayjs from 'dayjs';
 
 export default function Dashboard() {
+  const navigate = useNavigate();
   const { records, examinations, prescriptions } = useHealthStore();
 
   const currentMonth = dayjs().month();
@@ -110,7 +111,7 @@ export default function Dashboard() {
                 title="暂无就医记录"
                 description="开始记录您的就医历史，方便随时查看和管理"
                 actionLabel="添加第一条记录"
-                onAction={() => window.location.href = '/records/add'}
+                onAction={() => navigate('/records/add')}
               />
             )}
           </Card>

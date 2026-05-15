@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { Plus, Search } from 'lucide-react';
 import { useHealthStore } from '../stores/healthStore';
 import ExamCard from '../components/examinations/ExamCard';
@@ -26,6 +25,7 @@ export default function Examinations() {
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
   const [attachments, setAttachments] = useState<Attachment[]>([]);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState({
     examDate: new Date().toISOString().split('T')[0],
     examType: 'blood' as ExamType,
@@ -41,8 +41,18 @@ export default function Examinations() {
       exam.findings.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const validate = () => {
+    const newErrors: Record<string, string> = {};
+    if (!formData.examDate) newErrors.examDate = '请选择检查日期';
+    if (!formData.title.trim()) newErrors.title = '请输入检查标题';
+    if (!formData.findings.trim()) newErrors.findings = '请输入检查结果';
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleAddExam = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validate()) return;
     addExamination({
       ...formData,
       attachments,
@@ -105,7 +115,11 @@ export default function Examinations() {
 
       <Modal
         isOpen={showAddModal}
-        onClose={() => setShowAddModal(false)}
+        onClose={() => {
+          setShowAddModal(false);
+          setErrors({});
+          setAttachments([]);
+        }}
         title="添加检验检查"
         size="lg"
       >
@@ -116,6 +130,7 @@ export default function Examinations() {
               type="date"
               value={formData.examDate}
               onChange={(e) => setFormData({ ...formData, examDate: e.target.value })}
+              error={errors.examDate}
               required
             />
             <Select
@@ -131,6 +146,7 @@ export default function Examinations() {
             placeholder="例如：血常规、肝功能检查"
             value={formData.title}
             onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+            error={errors.title}
             required
           />
           <Textarea
@@ -138,6 +154,7 @@ export default function Examinations() {
             placeholder="详细的检查结果"
             value={formData.findings}
             onChange={(e) => setFormData({ ...formData, findings: e.target.value })}
+            error={errors.findings}
             required
           />
           <Textarea
@@ -164,6 +181,7 @@ export default function Examinations() {
           <div className="flex justify-end gap-4 pt-4">
             <Button type="button" variant="outline" onClick={() => {
               setShowAddModal(false);
+              setErrors({});
               setAttachments([]);
             }}>
               取消

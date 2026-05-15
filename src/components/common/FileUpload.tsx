@@ -23,7 +23,6 @@ export default function FileUpload({ attachments, onChange }: FileUploadProps) {
   };
 
   const processFiles = (files: FileList) => {
-    const newAttachments: Attachment[] = [];
     const fileArray = Array.from(files);
 
     fileArray.forEach((file) => {

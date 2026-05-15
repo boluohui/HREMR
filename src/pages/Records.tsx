@@ -1,10 +1,9 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Search, Filter } from 'lucide-react';
+import { Search, Plus } from 'lucide-react';
+import { useState } from 'react';
 import { useHealthStore } from '../stores/healthStore';
 import RecordCard from '../components/records/RecordCard';
 import Button from '../components/common/Button';
-import Input from '../components/common/Input';
 import EmptyState from '../components/common/EmptyState';
 import { formatYear } from '../utils/formatters';
 import dayjs from 'dayjs';

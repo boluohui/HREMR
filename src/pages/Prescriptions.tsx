@@ -6,6 +6,7 @@ import Button from '../components/common/Button';
 import EmptyState from '../components/common/EmptyState';
 import Modal from '../components/common/Modal';
 import Input from '../components/common/Input';
+import Select from '../components/common/Select';
 import Textarea from '../components/common/Textarea';
 
 interface MedicationInput {
@@ -17,10 +18,24 @@ interface MedicationInput {
   notes: string;
 }
 
+const routeOptions = [
+  { value: '口服', label: '口服' },
+  { value: '静脉注射', label: '静脉注射' },
+  { value: '肌肉注射', label: '肌肉注射' },
+  { value: '皮下注射', label: '皮下注射' },
+  { value: '外用', label: '外用' },
+  { value: '吸入', label: '吸入' },
+  { value: '含服', label: '含服' },
+  { value: '滴眼', label: '滴眼' },
+  { value: '滴耳', label: '滴耳' },
+  { value: '其他', label: '其他' },
+];
+
 export default function Prescriptions() {
   const { prescriptions, addPrescription } = useHealthStore();
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [medications, setMedications] = useState<MedicationInput[]>([
     { name: '', dosage: '', frequency: '', duration: '', route: '口服', notes: '' },
   ]);
@@ -48,8 +63,19 @@ export default function Prescriptions() {
     setMedications(updated);
   };
 
+  const validate = () => {
+    const newErrors: Record<string, string> = {};
+    const validMedications = medications.filter((m) => m.name.trim());
+    if (validMedications.length === 0) {
+      newErrors.medications = '请至少添加一种药品';
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validate()) return;
     const formData = new FormData(e.target as HTMLFormElement);
     addPrescription({
       prescriptionDate: formData.get('prescriptionDate') as string,
@@ -109,7 +135,11 @@ export default function Prescriptions() {
 
       <Modal
         isOpen={showAddModal}
-        onClose={() => setShowAddModal(false)}
+        onClose={() => {
+          setShowAddModal(false);
+          setErrors({});
+          setMedications([{ name: '', dosage: '', frequency: '', duration: '', route: '口服', notes: '' }]);
+        }}
         title="添加处方"
         size="xl"
       >
@@ -148,8 +178,12 @@ export default function Prescriptions() {
               </Button>
             </div>
 
+            {errors.medications && (
+              <p className="text-sm text-red-600 mb-4">{errors.medications}</p>
+            )}
+
             {medications.map((med, index) => (
-              <div key={index} className="grid grid-cols-2 gap-3 mb-3 p-3 bg-gray-50 rounded-lg">
+              <div key={index} className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3 p-3 bg-gray-50 rounded-lg">
                 <Input
                   label="药品名称"
                   placeholder="药品名"
@@ -174,8 +208,14 @@ export default function Prescriptions() {
                   value={med.duration}
                   onChange={(e) => handleMedicationChange(index, 'duration', e.target.value)}
                 />
+                <Select
+                  label="给药途径"
+                  value={med.route}
+                  onChange={(e) => handleMedicationChange(index, 'route', e.target.value)}
+                  options={routeOptions}
+                />
                 {medications.length > 1 && (
-                  <div className="col-span-2 flex justify-end">
+                  <div className="col-span-3 flex justify-end">
                     <Button
                       type="button"
                       variant="ghost"

@@ -4,7 +4,6 @@ import { ArrowLeft, Calendar, Download, Trash2, Image as ImageIcon, FileText, X 
 import { getExamTypeLabel, formatDate } from '../utils/formatters';
 import Card from '../components/common/Card';
 import Button from '../components/common/Button';
-import Badge from '../components/common/Badge';
 import EmptyState from '../components/common/EmptyState';
 import { useState } from 'react';
 import clsx from 'clsx';
