@@ -5,9 +5,9 @@ import MobileNav from './MobileNav';
 
 export default function Layout() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex">
       <Sidebar />
-      <div className="lg:ml-0">
+      <div className="flex-1 lg:ml-0">
         <Header />
         <main className="p-4 lg:p-8 pb-20 lg:pb-8">
           <Outlet />
