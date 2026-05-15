@@ -130,7 +130,7 @@ export default function Dashboard() {
               <div className="grid grid-cols-2 gap-3">
                 <Link to="/examinations">
                   <Button variant="outline" className="w-full justify-center py-2.5">
-                    <TestTube className="w-5 h-5 mr-1.5" />
+                    <TestTube className="w-6 h-6 mr-1.5" />
                     检验检查
                   </Button>
                 </Link>
