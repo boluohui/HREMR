@@ -120,25 +120,27 @@ export default function Dashboard() {
         <div className="space-y-6">
           <Card>
             <h3 className="text-lg font-semibold text-gray-900 mb-4">快捷操作</h3>
-            <div className="space-y-3">
+            <div className="space-y-4">
               <Link to="/records/add">
-                <Button variant="primary" className="w-full justify-start">
-                  <Plus className="w-4 h-4 mr-2" />
+                <Button variant="primary" className="w-full justify-center py-3">
+                  <Plus className="w-5 h-5 mr-2" />
                   添加就医记录
                 </Button>
               </Link>
-              <Link to="/examinations">
-                <Button variant="outline" className="w-full justify-start">
-                  <TestTube className="w-4 h-4 mr-2" />
-                  添加检验检查
-                </Button>
-              </Link>
-              <Link to="/prescriptions">
-                <Button variant="outline" className="w-full justify-start">
-                  <Pill className="w-4 h-4 mr-2" />
-                  添加处方信息
-                </Button>
-              </Link>
+              <div className="grid grid-cols-2 gap-3">
+                <Link to="/examinations">
+                  <Button variant="outline" className="w-full justify-center py-2.5">
+                    <TestTube className="w-5 h-5 mr-1.5" />
+                    检验检查
+                  </Button>
+                </Link>
+                <Link to="/prescriptions">
+                  <Button variant="outline" className="w-full justify-center py-2.5">
+                    <Pill className="w-5 h-5 mr-1.5" />
+                    处方管理
+                  </Button>
+                </Link>
+              </div>
             </div>
           </Card>
 
